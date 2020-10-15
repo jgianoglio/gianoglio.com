@@ -6,7 +6,16 @@
     <description>Recent content on Jim Gianoglio (gin-olio) | Problem Solving with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 06 Feb 2020 16:38:19 -0500</lastBuildDate><atom:link href="https://www.gianoglio.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 15 Oct 2020 14:58:30 -0400</lastBuildDate><atom:link href="https://www.gianoglio.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Here&#39;s my title</title>
+      <link>https://www.gianoglio.com/posts/new-post/</link>
+      <pubDate>Thu, 15 Oct 2020 14:58:30 -0400</pubDate>
+      
+      <guid>https://www.gianoglio.com/posts/new-post/</guid>
+      <description>and here we go again</description>
+    </item>
+    
     <item>
       <title>The beginning ...</title>
       <link>https://www.gianoglio.com/posts/my-first-post/</link>
