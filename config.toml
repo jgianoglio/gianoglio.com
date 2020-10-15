@@ -1,0 +1,89 @@
+baseurl = "https://www.gianoglio.com"
+title = "Jim Gianoglio (gin-olio) | Problem Solving with Data"
+theme = "coder"
+languagecode = "en"
+defaultcontentlanguage = "en"
+googleAnalytics = "UA-151246514-1"
+
+paginate = 20
+canonifyurls = true
+summaryLength = 70
+
+pygmentsstyle = "bw"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
+
+disqusShortname = "yourdiscussshortname"
+
+[params]
+    author = "Jim Gianoglio"
+    info = "I do fun stuff with data."
+    description = "A blog about solving problems with data by Jim Gianoglio."
+    avatarurl = "images/avatar.jpg"
+
+    gtm_id = "GTM-TFH36H"
+
+    favicon_32 = "/images/favicon-32x32.png"
+    favicon_16 = "/images/favicon-16x16.png"
+
+    # footercontent = "Text at the bottom of the page."
+
+    dateformat = "January 2, 2006"
+
+    # Specify light/dark colorscheme
+    # Supported values:
+    # "auto" (use preference set by browser)
+    # "dark" (dark background, light foreground)
+    # "light" (light background, dark foreground) (default)
+    colorscheme = "auto"
+
+    # Series see also post count
+    maxSeeAlsoItems = 5
+
+    hidecredits = true
+    hidecopyright = false
+
+    rtl = false
+
+    # Custom CSS
+    custom_css = ["css/custom.css"]
+    
+    # Custom JS
+    custom_js = []
+
+    math = true
+
+[taxonomies]
+    category = "categories"
+    series = "series"
+    tag = "tags"
+    # mood = "moods"
+
+# Social links
+#[[params.social]]
+#    name = "Github"
+#    icon = "fab fa-github fa-2x"
+#    weight = 1
+#    url = "https://github.com/jgianoglio/"
+[[params.social]]
+    name = "Twitter"
+    icon = "fab fa-twitter fa-2x"
+    weight = 3
+    url = "https://twitter.com/jgianoglio/"
+    target = "new"
+[[params.social]]
+    name = "LinkedIn"
+    icon = "fab fa-linkedin fa-2x"
+    weight = 3
+    url = "https://www.linkedin.com/in/jimgianoglio/"
+    target = "new"
+
+# Menu links
+[[menu.main]]
+    name = "Blog"
+    weight = 1
+    url  = "/posts/"
+[[menu.main]]
+    name = "About"
+    weight = 2
+    url = "/about/"
