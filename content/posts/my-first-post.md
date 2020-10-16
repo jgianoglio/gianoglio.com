@@ -15,3 +15,10 @@ I plan to mostly write on topics related to analytics, data science, and machine
 I might also venture off occasionally on completely unrelated topics of interest, like coffee or cycling.
 
 I’d be happy if you join me on this journey. Hopefully we’ll learn from each other along the way.
+
+{{<highlight sql "linenos=table">}}
+SELECT
+    *
+FROM
+    `project.dataset.table_id`
+{{</highlight>}}
