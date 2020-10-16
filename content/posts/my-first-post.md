@@ -1,6 +1,6 @@
 ---
 title: "The beginning ..."
-date: 2020-02-06T16:38:19-05:00
+date: 2020-10-15T16:38:19-05:00
 tags: []
 categories: []
 featured_image: "../../images/long-journey.png"
