@@ -55,7 +55,6 @@ disqusShortname = "yourdiscussshortname"
 
 [taxonomies]
     category = "categories"
-    series = "series"
     tag = "tags"
     # mood = "moods"
 

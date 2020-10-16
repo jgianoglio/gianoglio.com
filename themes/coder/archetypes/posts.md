@@ -5,7 +5,6 @@ title: ""
 description: ""
 tags: []
 categories: []
-series: []
 featured_image: ""
 summary: ""
 slug = ""

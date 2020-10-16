@@ -3,7 +3,6 @@ title: "The beginning ..."
 date: 2020-02-06T16:38:19-05:00
 tags: []
 categories: []
-series: []
 featured_image: "../../images/long-journey.png"
 draft: false
 summary: "I decided to start blogging. Here's why..."
