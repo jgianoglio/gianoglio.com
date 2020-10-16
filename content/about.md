@@ -1,9 +1,8 @@
 ---
-title: "About"
+title: "About Jim Gianoglio"
 date: 2020-10-15T21:42:14-04:00
 draft: false
 ---
-# About Jim Gianoglio
 {{< figure src="/images/CWAW.png" alt="Jim Gianoglio presenting to Columbus Web Analytics Wednesday">}}
 
 Hi, I'm Jim Gianoglio. I'm a Lead Data Scientist at [Bounteous](https://www.bounteous.com), where I get to play with web analytics and digital marketing data every day.
