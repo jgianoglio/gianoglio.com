@@ -1,7 +1,7 @@
 ---
 title: "About"
 date: 2020-10-15T21:42:14-04:00
-draft: true
+draft: false
 ---
 # About Jim Gianoglio
 {{< figure src="/images/CWAW.png" alt="Jim Gianoglio presenting to Columbus Web Analytics Wednesday">}}
