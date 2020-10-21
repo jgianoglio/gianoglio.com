@@ -46,7 +46,7 @@ disqusShortname = "yourdiscussshortname"
     rtl = false
 
     # Custom CSS
-    custom_css = ["css/custom.css"]
+    #custom_css = ["css/custom.css"]
     
     # Custom JS
     custom_js = []
