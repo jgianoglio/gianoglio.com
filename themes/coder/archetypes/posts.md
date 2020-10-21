@@ -7,5 +7,4 @@ tags: []
 categories: []
 featured_image: ""
 summary: ""
-slug = ""
 ---
