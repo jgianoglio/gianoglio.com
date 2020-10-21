@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    
+    
+<script>
+    var dataLayer = window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+        'gtm_id': 'GTM-TFH36H'
+    });
+</script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TFH36H');</script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Jim Gianoglio">
+    <meta name="description" content="A blog about solving problems with data by Jim Gianoglio.">
+    
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Updating Google Analytics Hit-Level Custom Dimensions in BigQuery"/>
+<meta name="twitter:description" content="Updating hit-level custom dimension information in BigQuery is not as simple as it sounds. Here&#39;s the code to do it."/>
+
+    <meta property="og:title" content="Updating Google Analytics Hit-Level Custom Dimensions in BigQuery" />
+<meta property="og:description" content="Updating hit-level custom dimension information in BigQuery is not as simple as it sounds. Here&#39;s the code to do it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.gianoglio.com/posts/updating-hit-level-custom-dimensions-google-analytics/" />
+<meta property="article:published_time" content="2020-10-20T21:59:14-04:00" />
+<meta property="article:modified_time" content="2020-10-20T21:59:14-04:00" />
+
+
+    
+      <base href="https://www.gianoglio.com/posts/updating-hit-level-custom-dimensions-google-analytics/">
+    
+    <title>
+  Updating Google Analytics Hit-Level Custom Dimensions in BigQuery · Jim Gianoglio (gin-olio) | Problem Solving with Data
+</title>
+
+    
+      <link rel="canonical" href="https://www.gianoglio.com/posts/updating-hit-level-custom-dimensions-google-analytics/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://www.gianoglio.com/css/coder.min.b86a8d0ee25b02833354f8dc9f0bb591c569edd3821cbfecb7c6e3152309d0d4.css" integrity="sha256-uGqNDuJbAoMzVPjcnwu1kcVp7dOCHL/st8bjFSMJ0NQ=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+      
+        
+        
+        <link rel="stylesheet" href="https://www.gianoglio.com/css/coder-dark.min.83a2010dac9f59f943b3004cd6c4f230507ad036da635d3621401d42ec4e2835.css" integrity="sha256-g6IBDayfWflDswBM1sTyMFB60DbaY102IUAdQuxOKDU=" crossorigin="anonymous" media="screen" />
+      
+    
+
+    
+      <link rel="stylesheet" href="https://www.gianoglio.com/css/custom.css" />
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="https://www.gianoglio.com/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://www.gianoglio.com/images/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.76.5" />
+  </head>
+
+  
+  
+    
+  
+  <body class="colorscheme-auto">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://www.gianoglio.com/">
+      
+      gin-olio
+    </a>
+    
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://www.gianoglio.com/posts/">Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://www.gianoglio.com/about/">About</a>
+          </li>
+        
+      
+      
+    </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Updating Google Analytics Hit-Level Custom Dimensions in BigQuery</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2020-10-20T21:59:14-04:00'>
+                October 20, 2020
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              12-minute read
+            </span>
+          </div>
+          <div class="categories">
+  <i class="fas fa-folder"></i>
+    <a href="https://www.gianoglio.com/categories/bigquery/">BigQuery</a></div>
+
+          <div class="tags">
+  <i class="fas fa-tag"></i>
+    <a href="https://www.gianoglio.com/tags/bigquery/">BigQuery</a>
+      <span class="separator">•</span>
+    <a href="https://www.gianoglio.com/tags/google-analytics/">Google Analytics</a>
+      <span class="separator">•</span>
+    <a href="https://www.gianoglio.com/tags/sql/">SQL</a></div>
+
+        </div>
+      </header>
+
+      <div>
+        
+        <p>I recently had a client with a problem. There was an issue with their Google Tag Manager implementation that prevented the collection of certain hit-level custom dimensions to Google Analytics.</p>
+<p>Fortunately, they had GA360 (with the export to BigQuery already enabled), and the missing custom dimension information was able to be replicated based on the page path. In other words, I could create a lookup table table based on the page path of the hit to grab the corresponding custom dimension value (in this particular case, it was a custom dimension named Site ID).</p>
+<p>It seemed simple enough. But it turned out to be rather complex. (If you know of a simpler soultion, please let me know! I do sometimes have a tendency to find overly complicated solutions.)</p>
+<p>The complexity stems from the fact that these are hit-level custom dimensions, requiring me to have to <code>UNNEST</code> two levels deep (<code>UNNEST</code> the hits, then <code>UNNEST</code> the custom dimensions).</p>
+<p>Also, I wanted to use the <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-manipulation-language">BigQuery data manipulation language (DML)</a> to do the updates - mainly because I haven&rsquo;t had a chance to really use it before and also because it seemed appropriate for the task.</p>
+<p>With DML, you can update, insert, and delete data from your tables. I needed to update the tables, but specifically, I needed to update the <code>hits</code> field. Due to the nested nature of the Google Analytics data in BigQuery, the <code>hits</code> field is a single column (comprised of 176 other &ldquo;sub-fields&rdquo;!).</p>
+<p>I thought I&rsquo;d be able to update just part of the hit (specifically, the value for custom dimension index 1). However, almost every method I tried ended in the following error:</p>
+<p><code>Error: Correlated subqueries that reference other tables are not supported unless they can be de-correlated, such as by transforming them into an efficient JOIN.</code></p>
+<p>After spending too many hours on <a href="https://stackoverflow.com/questions/45040472/avoid-correlated-subqueries-error-in-bigquery">Stack Overflow</a>, reading <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/arrays">BigQuery documentation on <code>ARRAY</code> and <code>STRUCT</code></a>, and experimenting with different queries, I came to the realization that I&rsquo;d just have to <code>UNNEST</code> the <code>hits</code> and the <code>hits.customDimensions</code>, join on the lookup table table, then recreate the the entire <code>hits</code> field for each session. Fun.</p>
+<p>For those that want to follow along, below is the SQL to generate a couple rows to mimic Google Analytics data in BQ. This is a simpler dataset to work with, which I found helps when trying to tackle larger problems.</p>
+<div class="highlight"><div style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#776e71">-- Create a table to mimic a session in GA
+</span><span style="color:#776e71"></span><span style="color:#815ba4">SELECT</span>
+  <span style="color:#48b685">&#39;1234&#39;</span> <span style="color:#815ba4">AS</span> clientId,
+  <span style="color:#f99b15">12345678</span> <span style="color:#815ba4">AS</span> visitStartTime,
+  STRUCT(<span style="color:#f99b15">1</span> <span style="color:#815ba4">AS</span> visits,
+    <span style="color:#f99b15">2</span> <span style="color:#815ba4">AS</span> hits) <span style="color:#815ba4">AS</span> totals,
+  [ STRUCT(<span style="color:#f99b15">1</span> <span style="color:#815ba4">AS</span> hitNumber,
+    STRUCT(<span style="color:#48b685">&#39;/careers/&#39;</span> <span style="color:#815ba4">AS</span> pagePath,
+      <span style="color:#48b685">&#39;example.com&#39;</span> <span style="color:#815ba4">AS</span> hostname) <span style="color:#815ba4">AS</span> page,
+    [STRUCT(<span style="color:#f99b15">1</span> <span style="color:#815ba4">AS</span> <span style="color:#815ba4">index</span>,
+      <span style="color:#48b685">&#39;one&#39;</span> <span style="color:#815ba4">AS</span> value),
+    STRUCT(<span style="color:#f99b15">2</span> <span style="color:#815ba4">AS</span> <span style="color:#815ba4">index</span>,
+      <span style="color:#48b685">&#39;two&#39;</span> <span style="color:#815ba4">AS</span> value)] <span style="color:#815ba4">AS</span> customDimensions),
+  STRUCT(<span style="color:#f99b15">2</span> <span style="color:#815ba4">AS</span> hitNumber,
+    STRUCT(<span style="color:#48b685">&#39;/insights/&#39;</span> <span style="color:#815ba4">AS</span> pagePath,
+      <span style="color:#48b685">&#39;example.com&#39;</span> <span style="color:#815ba4">AS</span> hostname) <span style="color:#815ba4">AS</span> page,
+    [STRUCT(<span style="color:#f99b15">1</span> <span style="color:#815ba4">AS</span> <span style="color:#815ba4">index</span>,
+      <span style="color:#48b685">&#39;(not set)&#39;</span> <span style="color:#815ba4">AS</span> value),
+    STRUCT(<span style="color:#f99b15">2</span> <span style="color:#815ba4">AS</span> <span style="color:#815ba4">index</span>,
+      <span style="color:#48b685">&#39;two-more&#39;</span> <span style="color:#815ba4">AS</span> value)] <span style="color:#815ba4">AS</span> customDimensions) ] <span style="color:#815ba4">AS</span> hits
+<span style="color:#815ba4">UNION</span> <span style="color:#815ba4">ALL</span>
+<span style="color:#815ba4">SELECT</span>
+  <span style="color:#48b685">&#39;9877&#39;</span> <span style="color:#815ba4">AS</span> clientId,
+  <span style="color:#f99b15">23456789</span> <span style="color:#815ba4">AS</span> visitStartTime,
+  STRUCT(<span style="color:#f99b15">1</span> <span style="color:#815ba4">AS</span> visits,
+    <span style="color:#f99b15">3</span> <span style="color:#815ba4">AS</span> hits) <span style="color:#815ba4">AS</span> totals,
+  [ STRUCT(<span style="color:#f99b15">1</span> <span style="color:#815ba4">AS</span> hitNumber,
+    STRUCT(<span style="color:#48b685">&#39;/&#39;</span> <span style="color:#815ba4">AS</span> pagePath,
+      <span style="color:#48b685">&#39;example2.com&#39;</span> <span style="color:#815ba4">AS</span> hostname) <span style="color:#815ba4">AS</span> page,
+    [STRUCT(<span style="color:#f99b15">1</span> <span style="color:#815ba4">AS</span> <span style="color:#815ba4">index</span>,
+      <span style="color:#48b685">&#39;one&#39;</span> <span style="color:#815ba4">AS</span> value),
+    STRUCT(<span style="color:#f99b15">2</span> <span style="color:#815ba4">AS</span> <span style="color:#815ba4">index</span>,
+      <span style="color:#48b685">&#39;two&#39;</span> <span style="color:#815ba4">AS</span> value)] <span style="color:#815ba4">AS</span> customDimensions),
+  STRUCT(<span style="color:#f99b15">2</span> <span style="color:#815ba4">AS</span> hitNumber,
+    STRUCT(<span style="color:#48b685">&#39;/blog/&#39;</span> <span style="color:#815ba4">AS</span> pagePath,
+      <span style="color:#48b685">&#39;example2.com&#39;</span> <span style="color:#815ba4">AS</span> hostname) <span style="color:#815ba4">AS</span> page,
+    [STRUCT(<span style="color:#f99b15">2</span> <span style="color:#815ba4">AS</span> <span style="color:#815ba4">index</span>,
+      <span style="color:#48b685">&#39;dos&#39;</span> <span style="color:#815ba4">AS</span> value)] <span style="color:#815ba4">AS</span> customDimensions),
+  STRUCT(<span style="color:#f99b15">3</span> <span style="color:#815ba4">AS</span> hitNumber,
+    STRUCT(<span style="color:#48b685">&#39;/blog/post/&#39;</span> <span style="color:#815ba4">AS</span> pagePath,
+      <span style="color:#48b685">&#39;example2.com&#39;</span> <span style="color:#815ba4">AS</span> hostname) <span style="color:#815ba4">AS</span> page,
+    [STRUCT(<span style="color:#f99b15">1</span> <span style="color:#815ba4">AS</span> <span style="color:#815ba4">index</span>,
+      <span style="color:#48b685">&#39;un&#39;</span> <span style="color:#815ba4">AS</span> value),
+    STRUCT(<span style="color:#f99b15">2</span> <span style="color:#815ba4">AS</span> <span style="color:#815ba4">index</span>,
+      <span style="color:#48b685">&#39;deux&#39;</span> <span style="color:#815ba4">AS</span> value)] <span style="color:#815ba4">AS</span> customDimensions) ] <span style="color:#815ba4">AS</span> hits</code></pre></td></tr></table>
+</div>
+</div>
+<figure>
+    <img src="../../images/mimic-sessions.png"
+         alt="BigQuery table with two rows that mimic the nested nature of Google Analytics data."/> <figcaption>
+            <p>The above SQL will ouput two rows, with nested hits and nested custom dimensions.</p>
+        </figcaption>
+</figure>
+
+<p>Notice in the screenshot above how the second hit of the first row (with a <code>hits.page.pagePath</code> of <em>/insights/</em>) has a value of <em>(not set)</em> for custom dimension index 1. The goal is to update that value from <em>(not set)</em> to a value based on a separate lookup table table.</p>
+<p>The following SQL outputs our sample lookup table table:</p>
+<div class="highlight"><div style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#776e71">-- Create a table to mimic a lookup table table with pagePath and site ID
+</span><span style="color:#776e71"></span><span style="color:#815ba4">SELECT</span> 
+  <span style="color:#48b685">&#39;/careers/&#39;</span> <span style="color:#815ba4">AS</span> pagePath,
+  <span style="color:#48b685">&#39;C-3PO&#39;</span> <span style="color:#815ba4">AS</span> site_id
+<span style="color:#815ba4">UNION</span> <span style="color:#815ba4">ALL</span>
+<span style="color:#815ba4">SELECT</span>
+  <span style="color:#48b685">&#39;/&#39;</span> <span style="color:#815ba4">AS</span> pagePath,
+  <span style="color:#48b685">&#39;R2-D2&#39;</span> <span style="color:#815ba4">AS</span> site_id
+<span style="color:#815ba4">UNION</span> <span style="color:#815ba4">ALL</span>
+<span style="color:#815ba4">SELECT</span>
+  <span style="color:#48b685">&#39;/insights/&#39;</span> <span style="color:#815ba4">AS</span> pagePath,
+  <span style="color:#48b685">&#39;867-5309&#39;</span> <span style="color:#815ba4">AS</span> site_id</code></pre></td></tr></table>
+</div>
+</div>
+<figure>
+    <img src="../../images/lookup-table.png"
+         alt="Lookup table with page path and site ID."/> <figcaption>
+            <p>This is our lookup table table. Whenever custom dimension index 1 has a value of <em>(not set)</em>, we&rsquo;ll replace that with the value in this table, based on the page path of the hit.</p>
+        </figcaption>
+</figure>
+
+<p>Given the sample table generated by the first bit of SQL, we see that the second hit of the first session has a value of <em>(not set)</em> for custom dimension index 1 and a <code>hits.page.pagePath</code> of <em>/insights/</em>. So we&rsquo;d join with the lookup table table where <code>hits.page.pagePath</code> = <code>pagePath</code>, and replace <em>(not set)</em> with <em>867-5309</em> - the value of the <em>site_id</em> field in the lookup table table.</p>
+<p>To follow along with this example, run the queries above and save the results as tables. I named them <code>ga_sessions_sample</code> and <code>site_id_lookup</code>, which I&rsquo;ll reference throughout the rest of this article.</p>
+<h2 id="time-to-transform">Time to Transform</h2>
+<p>Now that we&rsquo;ve set up some sample tables, it&rsquo;s time to get to work. There are basically 2 steps that need to happen:</p>
+<p><strong>Step 1:</strong> Create an &ldquo;updated hits&rdquo; table with <code>clientId</code>, <code>visitStartTime</code>, and the entire <code>hits</code> field (with the custom dimension value updated). This will be the table that we use to replace the <code>hits</code> field in the original <code>ga_sessions_*</code> tables.</p>
+<p><strong>Step 2:</strong> Run through the DML to update the <code>hits</code> field in the <code>ga_sessions_*</code> tables with the <code>hits</code> in our updated table.</p>
+<h3 id="step-1">Step 1</h3>
+<p>This query will update every instance of custom dimension Index 1 where the value is <em>(not set)</em>, using the lookup table table to replace <em>(not set)</em> with the <code>site_id</code> value. Run this query and save the output to a table (I named this table <em>updated_hits</em>)</p>
+<div class="highlight"><div style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#776e71">-- t1 UNNESTs the table and joins on the lookup table to get the correct value for Site ID
+</span><span style="color:#776e71"></span><span style="color:#815ba4">WITH</span> t1 <span style="color:#815ba4">AS</span> (
+  <span style="color:#815ba4">SELECT</span>
+    clientId
+    , visitStartTime
+    , hits
+    , cd.<span style="color:#815ba4">index</span>
+    , <span style="color:#815ba4">IF</span>(cd.<span style="color:#815ba4">index</span> <span style="color:#5bc4bf">=</span> <span style="color:#f99b15">1</span> <span style="color:#815ba4">AND</span> cd.value <span style="color:#5bc4bf">=</span> <span style="color:#48b685">&#39;(not set)&#39;</span>, site_id, cd.value) <span style="color:#815ba4">AS</span> value
+  <span style="color:#815ba4">FROM</span>
+    <span style="color:#5bc4bf">`</span>PROJECT.DATASET.ga_sessions_sample<span style="color:#5bc4bf">`</span> <span style="color:#815ba4">AS</span> sessions, <span style="color:#815ba4">UNNEST</span>(hits) <span style="color:#815ba4">AS</span> hits, <span style="color:#815ba4">UNNEST</span>(hits.customDimensions) <span style="color:#815ba4">AS</span> cd
+      <span style="color:#815ba4">LEFT</span> <span style="color:#815ba4">JOIN</span> <span style="color:#5bc4bf">`</span>PROJECT.DATASET.site_id_lookup<span style="color:#5bc4bf">`</span> <span style="color:#815ba4">AS</span> site_id_lookup
+      <span style="color:#815ba4">ON</span> hits.page.pagePath <span style="color:#5bc4bf">=</span> site_id_lookup.pagePath
+),
+
+<span style="color:#776e71">-- t2 puts the CD index and value into an array of structs, and selects all other fields
+</span><span style="color:#776e71"></span>t2 <span style="color:#815ba4">AS</span> (
+  <span style="color:#815ba4">SELECT</span>
+    <span style="color:#5bc4bf">*</span> <span style="color:#815ba4">EXCEPT</span>(hits, <span style="color:#815ba4">index</span>, value)    
+    , hits.hitNumber
+    , ANY_VALUE(hits.page) <span style="color:#815ba4">AS</span> page
+    , ARRAY_AGG(STRUCT(<span style="color:#815ba4">index</span>, value)) <span style="color:#815ba4">AS</span> customDimensions
+  <span style="color:#815ba4">FROM</span> t1
+  <span style="color:#815ba4">GROUP</span> <span style="color:#815ba4">BY</span> clientId, visitStartTime, hitNumber
+  <span style="color:#815ba4">ORDER</span> <span style="color:#815ba4">BY</span> clientId, visitStartTime, hitNumber <span style="color:#815ba4">ASC</span>
+)
+
+<span style="color:#776e71">-- forms all the hit fields into an array of structs
+</span><span style="color:#776e71"></span>  <span style="color:#815ba4">SELECT</span>
+    clientId
+    , visitStartTime
+    , ARRAY_AGG(STRUCT(hitNumber, page, customDimensions)) <span style="color:#815ba4">AS</span> hits
+  <span style="color:#815ba4">FROM</span>
+    t2
+  <span style="color:#815ba4">GROUP</span> <span style="color:#815ba4">BY</span>
+    clientId, visitStartTime</code></pre></td></tr></table>
+</div>
+</div>
+<figure>
+    <img src="../../images/updated_hits.png"
+         alt="Table with clientId, visitStartTime, and hits."/> <figcaption>
+            <p>This is our updated hits table. It includes just the clientId, visitStartTime, and hits fields (with the updated custom dimension value).</p>
+        </figcaption>
+</figure>
+
+<p>Now that you have a table with the <code>clientId</code> and <code>visitStartTime</code> (which we use to uniquely identify a session), along with the updated hits field for that session (which includes the updated custom dimension value), all that&rsquo;s left is a simple DML script to update the original <code>ga_sessions_sample</code> table:</p>
+<div class="highlight"><div style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#815ba4">UPDATE</span>
+  <span style="color:#5bc4bf">`</span>PROJECT.DATASET.ga_sessions_sample<span style="color:#5bc4bf">`</span> <span style="color:#815ba4">AS</span> a
+<span style="color:#815ba4">SET</span> a.hits <span style="color:#5bc4bf">=</span> b.hits
+<span style="color:#815ba4">FROM</span>
+  <span style="color:#5bc4bf">`</span>PROJECT.DATASET.updated_hits<span style="color:#5bc4bf">`</span> <span style="color:#815ba4">AS</span> b
+<span style="color:#815ba4">WHERE</span>
+  a.clientId <span style="color:#5bc4bf">=</span> b.clientId <span style="color:#815ba4">AND</span> a.visitStartTime <span style="color:#5bc4bf">=</span> b.visitStartTime</code></pre></td></tr></table>
+</div>
+</div>
+<p>After running the above script, check your <code>ga_sessions_sample</code> table again. You should see something like below:</p>
+<figure>
+    <img src="../../images/updated_table.png"
+         alt="Updated ga_sessions_sample table."/> <figcaption>
+            <p>This is our updated ga_sessions_sample table. It includes all of the original fields, with the updated custom dimension value outlined in red).</p>
+        </figcaption>
+</figure>
+
+<h2 id="play-times-over">Play Time&rsquo;s Over</h2>
+<p>Now that we have the proof of concept working on a sample dataset, it&rsquo;s time to apply the same principles (and make some slight modifications) to work with multiple days of real GA data.</p>
+<p>Here&rsquo;s the SQL to update and recreate the entire hits record:</p>
+<div class="highlight"><div style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#776e71">-- t1 UNNESTs the table and joins on the lookup table to get the correct value for SiteID
+</span><span style="color:#776e71"></span><span style="color:#815ba4">WITH</span> t1 <span style="color:#815ba4">AS</span> (
+  <span style="color:#815ba4">SELECT</span>
+    clientId
+    , visitStartTime
+    , hits
+    , cd.<span style="color:#815ba4">index</span>
+    , <span style="color:#815ba4">CASE</span> 
+        <span style="color:#815ba4">WHEN</span> cd.<span style="color:#815ba4">index</span> <span style="color:#5bc4bf">=</span> <span style="color:#f99b15">1</span> <span style="color:#815ba4">AND</span> cd.value <span style="color:#5bc4bf">=</span> <span style="color:#48b685">&#39;(not set)&#39;</span> <span style="color:#815ba4">THEN</span> site_id
+        <span style="color:#815ba4">ELSE</span> cd.value
+    <span style="color:#815ba4">END</span> <span style="color:#815ba4">AS</span> value
+  <span style="color:#815ba4">FROM</span>
+    <span style="color:#5bc4bf">`</span>PROJECT.DATASET.ga_sessions_<span style="color:#5bc4bf">*`</span> <span style="color:#815ba4">AS</span> sessions, <span style="color:#815ba4">UNNEST</span>(hits) <span style="color:#815ba4">AS</span> hits, <span style="color:#815ba4">UNNEST</span>(hits.customDimensions) <span style="color:#815ba4">AS</span> cd
+      <span style="color:#815ba4">LEFT</span> <span style="color:#815ba4">JOIN</span> <span style="color:#5bc4bf">`</span>PROJECT.DATASET.site_id_lookup<span style="color:#5bc4bf">`</span> <span style="color:#815ba4">AS</span> lookup_table
+      <span style="color:#815ba4">ON</span> lookup_table.pagePath <span style="color:#5bc4bf">=</span> hits.page.pagePath
+  <span style="color:#815ba4">WHERE</span>
+    _TABLE_SUFFIX <span style="color:#815ba4">BETWEEN</span> <span style="color:#48b685">&#39;20201001&#39;</span> <span style="color:#815ba4">AND</span> <span style="color:#48b685">&#39;20201007&#39;</span>
+),
+
+<span style="color:#776e71">-- t2 puts the CD index and value into an array of structs, and selects all other fields
+</span><span style="color:#776e71"></span>t2 <span style="color:#815ba4">AS</span> (
+  <span style="color:#815ba4">SELECT</span>
+    <span style="color:#5bc4bf">*</span> <span style="color:#815ba4">EXCEPT</span>(hits, <span style="color:#815ba4">index</span>, value)
+    , hits.<span style="color:#5bc4bf">*</span> <span style="color:#815ba4">EXCEPT</span>(page
+        , customDimensions 
+        , <span style="color:#815ba4">transaction</span>
+        , item
+        , contentInfo
+        , appInfo
+        , exceptionInfo
+        , eventInfo
+        , product
+        , promotion
+        , promotionActionInfo
+        , refund
+        , eCommerceAction
+        , experiment
+        , publisher 
+        , customVariables
+        , customMetrics
+        , social
+        , latencyTracking
+        , sourcePropertyInfo
+        , contentGroup
+        , publisher_infos)
+    , ANY_VALUE(hits.page) <span style="color:#815ba4">AS</span> page
+    , ANY_VALUE(hits.<span style="color:#815ba4">transaction</span>) <span style="color:#815ba4">AS</span> <span style="color:#815ba4">transaction</span>
+    , ANY_VALUE(hits.item) <span style="color:#815ba4">AS</span> item
+    , ANY_VALUE(hits.contentInfo) <span style="color:#815ba4">AS</span> contentInfo
+    , ANY_VALUE(hits.appInfo) <span style="color:#815ba4">AS</span> appInfo
+    , ANY_VALUE(hits.exceptionInfo) <span style="color:#815ba4">AS</span> exceptionInfo
+    , ANY_VALUE(hits.eventInfo) <span style="color:#815ba4">AS</span> eventInfo
+    , ANY_VALUE(hits.product) <span style="color:#815ba4">AS</span> product
+    , ANY_VALUE(hits.promotion) <span style="color:#815ba4">AS</span> promotion
+    , ANY_VALUE(hits.promotionActionInfo) <span style="color:#815ba4">AS</span> promotionActionInfo
+    , ANY_VALUE(hits.refund) <span style="color:#815ba4">AS</span> refund
+    , ANY_VALUE(hits.ecommerceAction) <span style="color:#815ba4">AS</span> ecommerceAction
+    , ANY_VALUE(hits.experiment) <span style="color:#815ba4">AS</span> experiment
+    , ANY_VALUE(hits.publisher) <span style="color:#815ba4">AS</span> publisher
+    , ANY_VALUE(hits.customVariables) <span style="color:#815ba4">AS</span> customVariables
+    , ANY_VALUE(hits.customMetrics) <span style="color:#815ba4">AS</span> customMetrics
+    , ANY_VALUE(hits.social) <span style="color:#815ba4">AS</span> social
+    , ANY_VALUE(hits.latencyTracking) <span style="color:#815ba4">AS</span> latencyTracking
+    , ANY_VALUE(hits.sourcePropertyInfo) <span style="color:#815ba4">AS</span> sourcePropertyInfo
+    , ANY_VALUE(hits.contentGroup) <span style="color:#815ba4">AS</span> contentGroup
+    , ANY_VALUE(hits.publisher_infos) <span style="color:#815ba4">AS</span> publisher_infos
+    , ARRAY_AGG(STRUCT(<span style="color:#815ba4">index</span>, value)) <span style="color:#815ba4">AS</span> customDimensions
+  <span style="color:#815ba4">FROM</span> t1
+  <span style="color:#815ba4">GROUP</span> <span style="color:#815ba4">BY</span> <span style="color:#f99b15">1</span>,<span style="color:#f99b15">2</span>,<span style="color:#f99b15">3</span>,<span style="color:#f99b15">4</span>,<span style="color:#f99b15">5</span>,<span style="color:#f99b15">6</span>,<span style="color:#f99b15">7</span>,<span style="color:#f99b15">8</span>,<span style="color:#f99b15">9</span>,<span style="color:#f99b15">10</span>,<span style="color:#f99b15">11</span>,<span style="color:#f99b15">12</span>,<span style="color:#f99b15">13</span>
+  <span style="color:#815ba4">ORDER</span> <span style="color:#815ba4">BY</span> clientId, visitStartTime, hitNumber <span style="color:#815ba4">ASC</span>
+)
+
+<span style="color:#776e71">-- forms all the hit fields into an array of structs
+</span><span style="color:#776e71"></span>  <span style="color:#815ba4">SELECT</span>
+    clientId
+    , visitStartTime
+    , ARRAY_AGG(STRUCT(
+        hitNumber
+        , time
+        , hour
+        , <span style="color:#815ba4">minute</span>
+        , isSecure
+        , isInteraction
+        , isEntrance
+        , isExit
+        , referer
+        , page
+        , <span style="color:#815ba4">transaction</span>
+        , item
+        , contentInfo
+        , appInfo
+        , exceptionInfo
+        , eventInfo
+        , product
+        , promotion
+        , promotionActionInfo
+        , refund
+        , ecommerceAction
+        , experiment
+        , publisher 
+        , customVariables
+        , customDimensions
+        , customMetrics
+        , <span style="color:#815ba4">type</span>
+        , social
+        , latencyTracking
+        , sourcePropertyInfo
+        , contentGroup
+        , dataSource
+        , publisher_infos)) <span style="color:#815ba4">AS</span> hits
+  <span style="color:#815ba4">FROM</span>
+    t2
+  <span style="color:#815ba4">GROUP</span> <span style="color:#815ba4">BY</span>
+    clientId, visitStartTime</code></pre></td></tr></table>
+</div>
+</div>
+<p>114 lines of SQL isn&rsquo;t bad, considering there are 176 different fields all nested within the hits record.</p>
+<p>Running the above script will output the &ldquo;updated_hits,&rdquo; with the <code>clientID</code>, <code>visitStartTime</code>, and (updated) <code>hits</code> fields. This is what we did in Step 1 above. Again, you&rsquo;ll want to save the output of this query to a table (I named it <em>updated_hits</em>).</p>
+<p>Unfortunately, if your date range is too long or if you have a lot of data, the above query will produce the following error:
+<figure>
+    <img src="../../images/resources_exceeded_error.png"
+         alt="Resources exceeded error message."/> <figcaption>
+            <p>Uh oh - looks like we got a little crazy with our query and BQ can&rsquo;t handle it!</p>
+        </figcaption>
+</figure>
+</p>
+<p>This is the result of several computationally expensive operations, starting with the multiple <code>UNNEST</code>s in the first <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#with_clause">common table expression (CTE)</a>, followed by horrendous 1-2 punch of a 13-field <code>GROUP BY</code> and 3-field <code>ORDER BY</code> - ouch!</p>
+<p>I haven&rsquo;t found an elegant solution around this yet, and I had a bit of a time crunch to get this out for the client. So I&rsquo;m somewhat ashamed to admit that I just brute-forced my way through this by shortening the date range (to no more than 3 days as a time) and kept running this query over and over again (for about an hour and a half). I was appending the results to a single &ldquo;updated hits&rdquo; table each time. I&rsquo;m not proud.</p>
+<p>Fortunately, once I suffered through the manual updates, the rest was easily automated. I just repurposed the DML statement from above and sprinkled in some variables and a <code>WHILE</code> loop. This way, it loops through each <code>ga_sessions_*</code> table and replaces the <code>hits</code> field from the updated table.</p>
+<div class="highlight"><div style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#e7e9db;background-color:#2f1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#776e71">-- Update the first 7 variables to reflect your project, dataset, and table names and the
+</span><span style="color:#776e71">-- start and end dates of the tables you want to update.
+</span><span style="color:#776e71"></span><span style="color:#815ba4">DECLARE</span> original_ga_sessions_project STRING <span style="color:#815ba4">DEFAULT</span> <span style="color:#48b685">&#34;PROJECT&#34;</span>;
+<span style="color:#815ba4">DECLARE</span> original_ga_sessions_dataset STRING <span style="color:#815ba4">DEFAULT</span> <span style="color:#48b685">&#34;DATASET&#34;</span>;
+<span style="color:#815ba4">DECLARE</span> updated_table_project STRING <span style="color:#815ba4">DEFAULT</span> <span style="color:#48b685">&#34;PROJECT&#34;</span>;
+<span style="color:#815ba4">DECLARE</span> updated_table_dataset STRING <span style="color:#815ba4">DEFAULT</span> <span style="color:#48b685">&#34;DATASET&#34;</span>;
+<span style="color:#815ba4">DECLARE</span> updated_table STRING <span style="color:#815ba4">DEFAULT</span> <span style="color:#48b685">&#34;TABLE_NAME&#34;</span>;
+<span style="color:#815ba4">DECLARE</span> first_date INT64 <span style="color:#815ba4">DEFAULT</span> <span style="color:#f99b15">20200625</span>;
+<span style="color:#815ba4">DECLARE</span> last_date INT64 <span style="color:#815ba4">DEFAULT</span> <span style="color:#f99b15">20200627</span>;
+
+<span style="color:#776e71">-- DO NOT TOUCH ANYTHING BELOW THIS LINE --
+</span><span style="color:#776e71"></span><span style="color:#815ba4">DECLARE</span> original_ga_tables_array ARRAY<span style="color:#5bc4bf">&lt;</span>STRING<span style="color:#5bc4bf">&gt;</span>;
+<span style="color:#815ba4">DECLARE</span> original_ga_table STRING;
+<span style="color:#815ba4">DECLARE</span> updated_hits STRING;
+<span style="color:#815ba4">DECLARE</span> i INT64 <span style="color:#815ba4">DEFAULT</span> <span style="color:#f99b15">0</span>;
+
+<span style="color:#815ba4">SET</span> updated_hits <span style="color:#5bc4bf">=</span> (
+  <span style="color:#815ba4">SELECT</span>
+    CONCAT(<span style="color:#48b685">&#39;`&#39;</span>, updated_table_project, <span style="color:#48b685">&#39;.&#39;</span>, updated_table_dataset, <span style="color:#48b685">&#39;.&#39;</span>, updated_table, <span style="color:#48b685">&#39;`&#39;</span>)
+);
+
+<span style="color:#815ba4">SET</span> original_ga_tables_array <span style="color:#5bc4bf">=</span> (
+  <span style="color:#815ba4">WITH</span> date_array <span style="color:#815ba4">AS</span> (
+    <span style="color:#815ba4">SELECT</span>
+      GENERATE_ARRAY(first_date, last_date) <span style="color:#815ba4">AS</span> dates
+  )
+  <span style="color:#815ba4">SELECT</span>
+    ARRAY_AGG(CONCAT(original_ga_sessions_project, <span style="color:#48b685">&#39;.&#39;</span>, original_ga_sessions_dataset, <span style="color:#48b685">&#39;.ga_sessions_&#39;</span>, date))
+  <span style="color:#815ba4">FROM</span>
+    date_array, <span style="color:#815ba4">UNNEST</span>(dates) <span style="color:#815ba4">AS</span> date
+);
+
+WHILE i <span style="color:#5bc4bf">&lt;</span> ARRAY_LENGTH(original_ga_tables_array) <span style="color:#815ba4">DO</span>
+  <span style="color:#815ba4">SET</span> original_ga_table <span style="color:#5bc4bf">=</span> (
+    <span style="color:#815ba4">SELECT</span>
+      CONCAT(<span style="color:#48b685">&#39;`&#39;</span>, original_ga_tables_array[<span style="color:#815ba4">OFFSET</span>(i)], <span style="color:#48b685">&#39;`&#39;</span>)
+  );
+  
+  <span style="color:#815ba4">EXECUTE</span> <span style="color:#815ba4">IMMEDIATE</span> format(<span style="color:#48b685">&#34;&#34;&#34;
+</span><span style="color:#48b685">  UPDATE
+</span><span style="color:#48b685">    %s AS a
+</span><span style="color:#48b685">  SET a.hits = b.hits
+</span><span style="color:#48b685">  FROM
+</span><span style="color:#48b685">    %s AS b
+</span><span style="color:#48b685">  WHERE
+</span><span style="color:#48b685">    a.clientId = b.clientId AND a.visitStartTime = b.visitStartTime
+</span><span style="color:#48b685">  &#34;&#34;&#34;</span>, original_ga_table, updated_hits);
+  <span style="color:#815ba4">SET</span> i <span style="color:#5bc4bf">=</span> i <span style="color:#5bc4bf">+</span> <span style="color:#f99b15">1</span>;
+<span style="color:#815ba4">END</span> WHILE;</code></pre></td></tr></table>
+</div>
+</div>
+<p>All you have to do is update the first 7 variables in the above script with your specific project, dataset, and table names, along with the start and end dates of the tables you want to update. Just be ready to wait a while for this script to run if you have a lot of tables to update. In my particular example, it took 1 hour and 3 minutes to update about 3 months' worth of tables.</p>
+<figure>
+    <img src="../../images/query_processing_time.png"
+         alt="BigQuery query processing time details."/> <figcaption>
+            <p>My new record for longest time to process a query - 1 hour and 3 minutes!</p>
+        </figcaption>
+</figure>
+
+<h2 id="but-jim-what-about-">But Jim, what about &hellip;</h2>
+<p>I know, I can already hear the question &ldquo;I need to update a hit-level custom dimension that isn&rsquo;t included at all in the data - how do I do that?&rdquo; That&rsquo;s a great question. When I worked through the client problem that inspired this post, I was fortunate (I think) that if the custom dimension didn&rsquo;t have a value in the dataLayer, they were falling back to manually setting the value to <em>(not set)</em>.</p>
+<p>This makes the update fairly straight forward:</p>
+<p><code>IF(cd.index = 1 AND cd.value = '(not set)', site_id, cd.value) AS value</code></p>
+<p>But if nothing at all is being passed, it gets tricky. I haven&rsquo;t quite thought through that scenario, but if you&rsquo;re interested in a solution and willing to buy me a drink at the next in-person conference once the plague lifts, let me know and I&rsquo;ll figure it out for you.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        
+        
+      </footer>
+    </article>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js" id="MathJax-script"></script>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ['$', '$'], ['\\(', '\\)']
+        ],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  </section>
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    
+    
+      
+        © 2020
+      
+       Jim Gianoglio 
+    
+    
+    
+  </section>
+</footer>
+
+    </main>
+
+  </body>
+
+</html>

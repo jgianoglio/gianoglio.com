@@ -3,31 +3,58 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://www.gianoglio.com/tags/bigquery/</loc>
+    <lastmod>2020-10-20T21:59:14-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.gianoglio.com/categories/bigquery/</loc>
+    <lastmod>2020-10-20T21:59:14-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.gianoglio.com/categories/</loc>
+    <lastmod>2020-10-20T21:59:14-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.gianoglio.com/tags/google-analytics/</loc>
+    <lastmod>2020-10-20T21:59:14-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.gianoglio.com/</loc>
+    <lastmod>2020-10-20T21:59:14-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.gianoglio.com/posts/</loc>
+    <lastmod>2020-10-20T21:59:14-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.gianoglio.com/tags/sql/</loc>
+    <lastmod>2020-10-20T21:59:14-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.gianoglio.com/tags/</loc>
+    <lastmod>2020-10-20T21:59:14-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.gianoglio.com/posts/updating-hit-level-custom-dimensions-google-analytics/</loc>
+    <lastmod>2020-10-20T21:59:14-04:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://www.gianoglio.com/about/</loc>
     <lastmod>2020-10-15T21:42:14-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://www.gianoglio.com/</loc>
-    <lastmod>2020-10-15T16:38:19-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.gianoglio.com/posts/</loc>
-    <lastmod>2020-10-15T16:38:19-05:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.gianoglio.com/posts/my-first-post/</loc>
     <lastmod>2020-10-15T16:38:19-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://www.gianoglio.com/categories/</loc>
-  </url>
-  
-  <url>
-    <loc>https://www.gianoglio.com/tags/</loc>
   </url>
   
 </urlset>
