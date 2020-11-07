@@ -13,7 +13,8 @@
       <pubDate>Wed, 21 Oct 2020 15:23:06 -0400</pubDate>
       
       <guid>https://www.gianoglio.com/posts/copying-tables-in-bigquery/</guid>
-      <description>If you need to copy multiple date-sharded tables from one dataset to another in BigQuery, here&amp;rsquo;s a script to automate it.</description>
+      <description>If you&amp;rsquo;ve ever needed to copy tables from one project or dataset to another in BigQuery, the below script may be a good option for you.
+There are many options for copying tables in BigQuery, ranging from completely non-technical (point and click in the BigQuery UI) to more technical (command line and/or Python scripts).</description>
     </item>
     
     <item>
@@ -22,7 +23,8 @@
       <pubDate>Tue, 20 Oct 2020 21:59:14 -0400</pubDate>
       
       <guid>https://www.gianoglio.com/posts/updating-hit-level-custom-dimensions-google-analytics/</guid>
-      <description>Updating hit-level custom dimension information in BigQuery is not as simple as it sounds. Here&amp;rsquo;s the code to do it.</description>
+      <description>I recently had a client with a problem. There was an issue with their Google Tag Manager implementation that prevented the collection of certain hit-level custom dimensions to Google Analytics.
+Fortunately, they had GA360 (with the export to BigQuery already enabled), and the missing custom dimension information was able to be replicated based on the page path.</description>
     </item>
     
     <item>
@@ -33,7 +35,7 @@
       <guid>https://www.gianoglio.com/about/</guid>
       <description>Hi, I&amp;rsquo;m Jim Gianoglio. I&amp;rsquo;m a Lead Data Scientist at Bounteous, where I get to play with web analytics and digital marketing data every day.
 I graduated in 2018 from Carnegie Mellon University with a Master of Science in Information Technology (Business Intelligence &amp;amp; Data Analytics).
-I love to learn new things, and I love to teach. That&amp;rsquo;s one of the main reasons for this blog. It gives me an excuse to try new things, experiment a bit, and share what I&amp;rsquo;ve learned along the way.</description>
+I love to learn new things, and I love to teach.</description>
     </item>
     
     <item>
@@ -42,7 +44,7 @@ I love to learn new things, and I love to teach. That&amp;rsquo;s one of the mai
       <pubDate>Thu, 15 Oct 2020 16:38:19 -0500</pubDate>
       
       <guid>https://www.gianoglio.com/posts/my-first-post/</guid>
-      <description>I decided to start blogging. Here&amp;rsquo;s why&amp;hellip;</description>
+      <description>As the saying goes, a journey of a thousand miles begins with a single step. I don’t know if I have a thousand blog posts in me, but I have to start somewhere 🙂</description>
     </item>
     
   </channel>

@@ -13,7 +13,8 @@
       <pubDate>Wed, 21 Oct 2020 15:23:06 -0400</pubDate>
       
       <guid>https://www.gianoglio.com/posts/copying-tables-in-bigquery/</guid>
-      <description>If you need to copy multiple date-sharded tables from one dataset to another in BigQuery, here&amp;rsquo;s a script to automate it.</description>
+      <description>If you&amp;rsquo;ve ever needed to copy tables from one project or dataset to another in BigQuery, the below script may be a good option for you.
+There are many options for copying tables in BigQuery, ranging from completely non-technical (point and click in the BigQuery UI) to more technical (command line and/or Python scripts).</description>
     </item>
     
     <item>
@@ -22,7 +23,8 @@
       <pubDate>Tue, 20 Oct 2020 21:59:14 -0400</pubDate>
       
       <guid>https://www.gianoglio.com/posts/updating-hit-level-custom-dimensions-google-analytics/</guid>
-      <description>Updating hit-level custom dimension information in BigQuery is not as simple as it sounds. Here&amp;rsquo;s the code to do it.</description>
+      <description>I recently had a client with a problem. There was an issue with their Google Tag Manager implementation that prevented the collection of certain hit-level custom dimensions to Google Analytics.
+Fortunately, they had GA360 (with the export to BigQuery already enabled), and the missing custom dimension information was able to be replicated based on the page path.</description>
     </item>
     
   </channel>
