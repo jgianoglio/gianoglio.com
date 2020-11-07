@@ -81,8 +81,12 @@
       .date {
         display: inline-block;
         width: 20.0rem;
-        text-align: right;
-        margin-right: 3.0rem;
+        text-align: left;
+        margin-right: 1.0rem;
+        font-weight: 400;
+        font-size: 1.5rem;
+        font-family: open-sans, sans-serif;
+        color: #939fa7;
         @media only screen and (max-width : 768px) {
           display: block;
           text-align: left;
@@ -97,6 +101,16 @@
         &:focus {
           color: $link-color
         }
+      }
+      .summary {
+        font-size: 1.6rem;
+        color: $fg-color;
+        font-family: $text-font-family;
+        font-weight: 500;
+      }
+      .continue {
+        font-size: 1.5rem;
+        font-family: $heading-font-family;
       }
     }
   }
@@ -172,7 +186,7 @@
         position: relative;
         a {
           color: $fg-color;
-          text-transform: uppercase;
+          // text-transform: uppercase;
           margin-left: 1.0rem;
           margin-right: 1.0rem;
           font-size: 1.8rem;

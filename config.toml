@@ -7,7 +7,7 @@ googleAnalytics = "UA-151246514-1"
 
 paginate = 20
 canonifyurls = true
-summaryLength = 70
+summaryLength = 50
 
 pygmentsstyle = "bw"
 pygmentscodefences = true
@@ -59,15 +59,10 @@ disqusShortname = "yourdiscussshortname"
     # mood = "moods"
 
 # Social links
-#[[params.social]]
-#    name = "Github"
-#    icon = "fab fa-github fa-2x"
-#    weight = 1
-#    url = "https://github.com/jgianoglio/"
 [[params.social]]
     name = "Twitter"
     icon = "fab fa-twitter fa-2x"
-    weight = 3
+    weight = 1
     url = "https://twitter.com/jgianoglio/"
     target = "new"
 [[params.social]]
@@ -76,6 +71,11 @@ disqusShortname = "yourdiscussshortname"
     weight = 3
     url = "https://www.linkedin.com/in/jimgianoglio/"
     target = "new"
+[[params.social]]
+    name = "Github"
+    icon = "fab fa-github fa-2x"
+    weight = 2
+    url = "https://github.com/jgianoglio/"
 
 # Menu links
 [[menu.main]]

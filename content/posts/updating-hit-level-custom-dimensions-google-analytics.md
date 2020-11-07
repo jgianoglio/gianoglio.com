@@ -5,8 +5,8 @@ title: "Updating Google Analytics Hit-Level Custom Dimensions in BigQuery"
 description: "Updating hit-level custom dimension information in BigQuery is not as simple as it sounds. Here's the code to do it."
 tags: [BigQuery, Google Analytics, SQL]
 categories: [BigQuery]
-featured_image: ""
-summary: "Updating hit-level custom dimension information in BigQuery is not as simple as it sounds. Here's the code to do it."
+featured_image: "../../images/mimic-sessions.png"
+summary: ""
 ---
 
 I recently had a client with a problem. There was an issue with their Google Tag Manager implementation that prevented the collection of certain hit-level custom dimensions to Google Analytics.

@@ -26,14 +26,27 @@
   </div>
 </section>
 <section class="container centered">
-  <div class="recent-posts">
+  <div class="list">
     <h3>Recent Posts</h3>
       <ul>
         {{ range where .Paginator.Pages "Section" "posts"}}
         <li>
+          <!-- {{ if .Params.featured_image }}
+            {{ $original := .Params.featured_image }}
+            {{ $originalImg := .Resources.GetMatch $original}}
+            {{ if $originalImg }}
+              {{ $thumbnailImg := $originalImg.Fit "100x100" }}
+              {{ printf `<img src="%s">` $thumbnailImg.RelPermalink }}
+            {{end}}
+          <img src='{{ .Params.featured_image  }}' alt="Featured image"/>
+        {{ end }} -->
+          <a class="title" href="{{ .Params.ExternalLink | default .RelPermalink }}">{{ .Title }}</a><br/>
           <span class="date">{{ .Date.Format (.Site.Params.dateFormat | default "January 2, 2006" ) }}</span>
-          <a class="title" href="{{ .Params.ExternalLink | default .RelPermalink }}">{{ .Title }}</a>
-          <p>{{ .Params.summary }}</p>
+          <!-- <p class="summary">{{ .Params.summary }}</p> -->
+          <p class="summary">{{ .Summary }}</p>
+          <div>
+            <a class="continue" href="{{ .RelPermalink }}">Continue reading …</a>
+          </div>
         </li>
         <hr>
         {{ end }}
