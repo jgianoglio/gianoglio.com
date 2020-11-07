@@ -6,7 +6,16 @@
     <description>Recent content on Jim Gianoglio (gin-olio) | Problem Solving with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 20 Oct 2020 21:59:14 -0400</lastBuildDate><atom:link href="https://www.gianoglio.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 21 Oct 2020 15:23:06 -0400</lastBuildDate><atom:link href="https://www.gianoglio.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Copying Google Analytics Tables in BigQuery</title>
+      <link>https://www.gianoglio.com/posts/copying-tables-in-bigquery/</link>
+      <pubDate>Wed, 21 Oct 2020 15:23:06 -0400</pubDate>
+      
+      <guid>https://www.gianoglio.com/posts/copying-tables-in-bigquery/</guid>
+      <description>If you need to copy multiple date-sharded tables from one dataset to another in BigQuery, here&amp;rsquo;s a script to automate it.</description>
+    </item>
+    
     <item>
       <title>Updating Google Analytics Hit-Level Custom Dimensions in BigQuery</title>
       <link>https://www.gianoglio.com/posts/updating-hit-level-custom-dimensions-google-analytics/</link>
