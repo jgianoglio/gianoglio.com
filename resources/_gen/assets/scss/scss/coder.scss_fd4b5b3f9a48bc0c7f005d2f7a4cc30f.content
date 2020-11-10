@@ -235,7 +235,7 @@ img {
     .list ul li .date {
       display: inline-block;
       width: 20.0rem;
-      text-align: left;
+      text-align: right;
       margin-right: 1.0rem;
       font-weight: 400;
       font-size: 1.5rem;
