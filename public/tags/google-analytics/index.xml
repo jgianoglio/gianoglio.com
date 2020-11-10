@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Jim Gianoglio (gin-olio) | Problem Solving with Data</title>
-    <link>https://www.gianoglio.com/</link>
-    <description>Recent content on Jim Gianoglio (gin-olio) | Problem Solving with Data</description>
+    <title>Google Analytics on Jim Gianoglio (gin-olio) | Problem Solving with Data</title>
+    <link>https://www.gianoglio.com/tags/google-analytics/</link>
+    <description>Recent content in Google Analytics on Jim Gianoglio (gin-olio) | Problem Solving with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 21 Oct 2020 15:23:06 -0400</lastBuildDate><atom:link href="https://www.gianoglio.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 21 Oct 2020 15:23:06 -0400</lastBuildDate><atom:link href="https://www.gianoglio.com/tags/google-analytics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Copying Google Analytics Tables in BigQuery</title>
       <link>https://www.gianoglio.com/posts/copying-tables-in-bigquery/</link>
@@ -25,26 +25,6 @@ There are many options for copying tables in BigQuery, ranging from completely n
       <guid>https://www.gianoglio.com/posts/updating-hit-level-custom-dimensions-google-analytics/</guid>
       <description>I recently had a client with a problem. There was an issue with their Google Tag Manager implementation that prevented the collection of certain hit-level custom dimensions to Google Analytics.
 Fortunately, they had GA360 (with the export to BigQuery already enabled), and the missing custom dimension information was able to be replicated based on the page path.</description>
-    </item>
-    
-    <item>
-      <title>About Jim Gianoglio</title>
-      <link>https://www.gianoglio.com/about/</link>
-      <pubDate>Thu, 15 Oct 2020 21:42:14 -0400</pubDate>
-      
-      <guid>https://www.gianoglio.com/about/</guid>
-      <description>Hi, I&amp;rsquo;m Jim Gianoglio. I&amp;rsquo;m a Lead Data Scientist at Bounteous, where I get to play with web analytics and digital marketing data every day.
-I graduated in 2018 from Carnegie Mellon University with a Master of Science in Information Technology (Business Intelligence &amp;amp; Data Analytics).
-I love to learn new things, and I love to teach.</description>
-    </item>
-    
-    <item>
-      <title>The beginning ...</title>
-      <link>https://www.gianoglio.com/posts/my-first-post/</link>
-      <pubDate>Thu, 15 Oct 2020 16:38:19 -0500</pubDate>
-      
-      <guid>https://www.gianoglio.com/posts/my-first-post/</guid>
-      <description>As the saying goes, a journey of a thousand miles begins with a single step. I don’t know if I have a thousand blog posts in me, but I have to start somewhere 🙂</description>
     </item>
     
   </channel>
