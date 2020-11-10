@@ -6,11 +6,11 @@
     <description>Recent content on Jim Gianoglio (gin-olio) | Problem Solving with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 21 Oct 2020 15:23:06 -0400</lastBuildDate><atom:link href="https://www.gianoglio.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 06 Nov 2020 15:23:06 -0400</lastBuildDate><atom:link href="https://www.gianoglio.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Copying Google Analytics Tables in BigQuery</title>
       <link>https://www.gianoglio.com/posts/copying-tables-in-bigquery/</link>
-      <pubDate>Wed, 21 Oct 2020 15:23:06 -0400</pubDate>
+      <pubDate>Fri, 06 Nov 2020 15:23:06 -0400</pubDate>
       
       <guid>https://www.gianoglio.com/posts/copying-tables-in-bigquery/</guid>
       <description>If you&amp;rsquo;ve ever needed to copy tables from one project or dataset to another in BigQuery, the below script may be a good option for you.
