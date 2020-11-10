@@ -1,6 +1,6 @@
 ---
 draft: false
-date: 2020-10-21T15:23:06-04:00
+date: 2020-11-06T15:23:06-04:00
 title: "Copying Google Analytics Tables in BigQuery"
 description: "If you need to copy multiple date-sharded tables from one dataset to another in BigQuery, here's a script to automate it."
 tags: [BigQuery, Google Analytics, SQL]
