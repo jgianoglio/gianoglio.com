@@ -39,7 +39,7 @@ jobs:
     # Step 4 - Builds the site using the latest version of Hugo
     # Also specifies the theme we want to use
     - name: Build
-      run: hugo --theme=coder
+      run: hugo --theme=hugo-future-imperfect-slim
 
     # Step 5 - Create name file
     - name: Create cname file
