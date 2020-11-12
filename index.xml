@@ -5,26 +5,26 @@
     <link>https://www.gianoglio.com/</link>
     <description>Recent content on Jim Gianoglio (gin-olio) | Problem Solving with Data</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Fri, 06 Nov 2020 15:23:06 -0400</lastBuildDate><atom:link href="https://www.gianoglio.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 06 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.gianoglio.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Copying Google Analytics Tables in BigQuery</title>
-      <link>https://www.gianoglio.com/posts/copying-tables-in-bigquery/</link>
-      <pubDate>Fri, 06 Nov 2020 15:23:06 -0400</pubDate>
+      <link>https://www.gianoglio.com/blog/copying-tables-in-bigquery/</link>
+      <pubDate>Fri, 06 Nov 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://www.gianoglio.com/posts/copying-tables-in-bigquery/</guid>
+      <guid>https://www.gianoglio.com/blog/copying-tables-in-bigquery/</guid>
       <description>If you&amp;rsquo;ve ever needed to copy tables from one project or dataset to another in BigQuery, the below script may be a good option for you.
-There are many options for copying tables in BigQuery, ranging from completely non-technical (point and click in the BigQuery UI) to more technical (command line and/or Python scripts).</description>
+There are many options for copying tables in BigQuery, ranging from completely non-technical (point and click in the BigQuery UI) to more technical (command line and/or Python scripts).
+I won&amp;rsquo;t go into the pros and cons of each option, or why you would want to use one over the other.</description>
     </item>
     
     <item>
       <title>Updating Google Analytics Hit-Level Custom Dimensions in BigQuery</title>
-      <link>https://www.gianoglio.com/posts/updating-hit-level-custom-dimensions-google-analytics/</link>
+      <link>https://www.gianoglio.com/blog/updating-hit-level-custom-dimensions-google-analytics/</link>
       <pubDate>Tue, 20 Oct 2020 21:59:14 -0400</pubDate>
       
-      <guid>https://www.gianoglio.com/posts/updating-hit-level-custom-dimensions-google-analytics/</guid>
+      <guid>https://www.gianoglio.com/blog/updating-hit-level-custom-dimensions-google-analytics/</guid>
       <description>I recently had a client with a problem. There was an issue with their Google Tag Manager implementation that prevented the collection of certain hit-level custom dimensions to Google Analytics.
-Fortunately, they had GA360 (with the export to BigQuery already enabled), and the missing custom dimension information was able to be replicated based on the page path.</description>
+Fortunately, they had GA360 (with the export to BigQuery already enabled), and the missing custom dimension information was able to be replicated based on the page path. In other words, I could create a lookup table table based on the page path of the hit to grab the corresponding custom dimension value (in this particular case, it was a custom dimension named Site ID).</description>
     </item>
     
     <item>
@@ -35,15 +35,15 @@ Fortunately, they had GA360 (with the export to BigQuery already enabled), and t
       <guid>https://www.gianoglio.com/about/</guid>
       <description>Hi, I&amp;rsquo;m Jim Gianoglio. I&amp;rsquo;m a Lead Data Scientist at Bounteous, where I get to play with web analytics and digital marketing data every day.
 I graduated in 2018 from Carnegie Mellon University with a Master of Science in Information Technology (Business Intelligence &amp;amp; Data Analytics).
-I love to learn new things, and I love to teach.</description>
+I love to learn new things, and I love to teach. That&amp;rsquo;s one of the main reasons for this blog. It gives me an excuse to try new things, experiment a bit, and share what I&amp;rsquo;ve learned along the way.</description>
     </item>
     
     <item>
       <title>The beginning ...</title>
-      <link>https://www.gianoglio.com/posts/my-first-post/</link>
+      <link>https://www.gianoglio.com/blog/my-first-post/</link>
       <pubDate>Thu, 15 Oct 2020 16:38:19 -0500</pubDate>
       
-      <guid>https://www.gianoglio.com/posts/my-first-post/</guid>
+      <guid>https://www.gianoglio.com/blog/my-first-post/</guid>
       <description>As the saying goes, a journey of a thousand miles begins with a single step. I don’t know if I have a thousand blog posts in me, but I have to start somewhere 🙂</description>
     </item>
     

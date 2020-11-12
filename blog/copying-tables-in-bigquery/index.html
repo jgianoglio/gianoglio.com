@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+<title>Copying Google Analytics Tables in BigQuery - Jim Gianoglio (gin-olio) | Problem Solving with Data</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="generator" content="Hugo 0.78.1" /><meta property="og:site_name" content="Jim Gianoglio (gin-olio) | Problem Solving with Data">
+  <meta property="og:title" content="Copying Google Analytics Tables in BigQuery">
+  <meta property="og:description" content="If you need to copy multiple date-sharded tables from one dataset to another in BigQuery, here&#39;s a script to automate it.">
+  <meta property="description" content="If you need to copy multiple date-sharded tables from one dataset to another in BigQuery, here&#39;s a script to automate it.">
+  <meta property="og:url" content="https://www.gianoglio.com/blog/copying-tables-in-bigquery/">
+  <meta property="og:type" content="article">
+  
+    <meta property="og:image" content="https://www.gianoglio.com/img/main/avatar.jpg">
+  
+  <link rel="stylesheet" href="/css/bundle.min.d9e04ae08c9b3049b766dbd4aeab7d862c5ea1d13679b621490e0f5df5507497.css" integrity="sha256-2eBK4IybMEm3ZtvUrqt9hixeodE2ebYhSQ4PXfVQdJc="><link rel="stylesheet" href="/css/add-on.css">
+</head>
+
+  <body>
+    
+
+<header id="site-header">
+  <nav id="site-nav">
+    <h1 class="nav-title">
+      <a href="/" class="nav">
+        
+          Blog
+        
+      </a>
+    </h1>
+    <menu id="site-nav-menu" class="flyout-menu menu">
+      
+        
+          
+          <a href="/" class="nav link"><i class='fa fa-home'></i> Home</a>
+        
+      
+        
+          
+          <a href="/about/" class="nav link"><i class='far fa-id-card'></i> About</a>
+        
+      
+        
+          
+          <a href="/blog/" class="nav link"><i class='far fa-newspaper'></i> Blog</a>
+        
+      
+      <a href="#share-menu" class="nav link share-toggle"><i class="fas fa-share-alt">&nbsp;</i>Share</a>
+      <a href="#search-input" class="nav link search-toggle"><i class="fas fa-search">&nbsp;</i>Search</a>
+    </menu>
+    <a href="#search-input" class="nav search-toggle"><i class="fas fa-search fa-2x">&nbsp;</i></a>
+    <a href="#share-menu" class="nav share-toggle"><i class="fas fa-share-alt fa-2x">&nbsp;</i></a>
+    <a href="#lang-menu" class="nav lang-toggle" lang="en">en</a>
+    <a href="#site-nav" class="nav nav-toggle"><i class="fas fa-bars fa-2x"></i></a>
+  </nav>
+  <menu id="search" class="menu"><input id="search-input" class="search-input menu"></input><div id="search-results" class="search-results menu"></div></menu>
+  <menu id="lang-menu" class="flyout-menu menu">
+  <a href="#" lang="en" class="nav link active"> (en)</a>
+  
+    
+      
+    
+  
+</menu>
+
+  
+    <menu id="share-menu" class="flyout-menu menu">
+      <h1>Share Post</h1>
+      
+
+
+
+
+  
+    
+    <a href="//twitter.com/share?text=Copying%20Google%20Analytics%20Tables%20in%20BigQuery&amp;url=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f" target="_blank" rel="noopener" class="nav share-btn twitter">
+        <p>Twitter</p>
+      </a>
+  
+
+  
+      <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f" target="_blank" rel="noopener" class="nav share-btn facebook">
+        <p>Facebook</p>
+        </a>
+  
+
+  
+    <a href="//www.reddit.com/submit?url=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f&amp;title=Copying%20Google%20Analytics%20Tables%20in%20BigQuery" target="_blank" rel="noopener" class="nav share-btn reddit">
+          <p>Reddit</p>
+        </a>
+  
+
+  
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f&amp;title=Copying%20Google%20Analytics%20Tables%20in%20BigQuery" target="_blank" rel="noopener" class="nav share-btn linkedin">
+            <p>LinkedIn</p>
+          </a>
+  
+
+  
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f&amp;description=Copying%20Google%20Analytics%20Tables%20in%20BigQuery" target="_blank" rel="noopener" class="nav share-btn pinterest">
+          <p>Pinterest</p>
+        </a>
+  
+
+  
+        <a href="mailto:?subject=Check%20out%20this%20post%20by %7b%20%20%20%20%20%20%20%20map%5b%5d%7d&amp;body=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f" target="_blank" class="nav share-btn email" data-proofer-ignore>
+          <p>Email</p>
+        </a>
+  
+
+
+    </menu>
+  
+</header>
+
+    <div id="wrapper">
+      <section id="site-intro" >
+  <a href="/"><img src="https://www.gianoglio.com/img/main/avatar.jpg" class="circle" width="100" alt="Jim Gianoglio, Data Scientist" /></a>
+  <header>
+    <h1>Jim Gianoglio</h1>
+  </header>
+  <main>
+    <p>I do fun stuff with data.</p>
+  </main>
+  
+    <footer>
+      <ul class="socnet-icons">
+        
+
+        <li><a href="//github.com/jgianoglio/" target="_blank" rel="noopener" title="GitHub" class="fab fa-github"></a></li>
+
+
+
+
+
+
+
+
+
+
+
+<li><a href="//www.linkedin.com/in/jimgianoglio/" target="_blank" rel="noopener" title="LinkedIn" class="fab fa-linkedin"></a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a href="//twitter.com/jgianoglio" target="_blank" rel="noopener" title="Twitter" class="fab fa-twitter"></a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+      </ul>
+    </footer>
+  
+</section>
+
+      <main id="site-main">
+        
+  <article class="post">
+    <header>
+  <div class="title">
+    
+      <h2><a href="/blog/copying-tables-in-bigquery/">Copying Google Analytics Tables in BigQuery</a></h2>
+    
+    
+      <p>If you need to copy multiple date-sharded tables from one dataset to another in BigQuery, here&#39;s a script to automate it.</p>
+    
+  </div>
+  <div class="meta">
+    <time datetime="2020-11-06 00:00:00 &#43;0000 UTC">November 6, 2020</time>
+    
+    <p>3-Minute Read</p>
+  </div>
+</header>
+
+    <div id="socnet-share">
+      
+
+
+
+
+  
+    
+    <a href="//twitter.com/share?text=Copying%20Google%20Analytics%20Tables%20in%20BigQuery&amp;url=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f" target="_blank" rel="noopener" class="nav share-btn twitter">
+        <p>Twitter</p>
+      </a>
+  
+
+  
+      <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f" target="_blank" rel="noopener" class="nav share-btn facebook">
+        <p>Facebook</p>
+        </a>
+  
+
+  
+    <a href="//www.reddit.com/submit?url=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f&amp;title=Copying%20Google%20Analytics%20Tables%20in%20BigQuery" target="_blank" rel="noopener" class="nav share-btn reddit">
+          <p>Reddit</p>
+        </a>
+  
+
+  
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f&amp;title=Copying%20Google%20Analytics%20Tables%20in%20BigQuery" target="_blank" rel="noopener" class="nav share-btn linkedin">
+            <p>LinkedIn</p>
+          </a>
+  
+
+  
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f&amp;description=Copying%20Google%20Analytics%20Tables%20in%20BigQuery" target="_blank" rel="noopener" class="nav share-btn pinterest">
+          <p>Pinterest</p>
+        </a>
+  
+
+  
+        <a href="mailto:?subject=Check%20out%20this%20post%20by %7b%20%20%20%20%20%20%20%20map%5b%5d%7d&amp;body=https%3a%2f%2fwww.gianoglio.com%2fblog%2fcopying-tables-in-bigquery%2f" target="_blank" class="nav share-btn email" data-proofer-ignore>
+          <p>Email</p>
+        </a>
+  
+
+
+    </div>
+    <div class="content">
+      
+      <p>If you&rsquo;ve ever needed to copy tables from one project or dataset to another in BigQuery, the below script may be a good option for you.</p>
+<p>There are many options for copying tables in BigQuery, ranging from completely non-technical (point and click in the BigQuery UI) to more technical (command line and/or Python scripts).</p>
+<p>I won&rsquo;t go into the pros and cons of each option, or why you would want to use one over the other. For a good explanation of that, <a href="https://medium.com/@vmnamburu/how-to-efficiently-copy-data-between-bigquery-environments-part-1-475df9c6cac6">this article from Vamsi Namburu</a> does an excellent job at covering those details.</p>
+<p>Below is the code I used to copy a range of daily tables from one dataset to another (can be the same project or a different project, as long as you have the right roles/permissions in each project). If you want to copy every single table, this is <strong>not</strong> a good option. In that case, you can just copy the entire dataset using the BQ UI, like pictured below:</p>
+<figure>
+    <img src="../../images/copy_dataset.png"
+         alt="Copy Dataset in the BigQuery user interface."/> <figcaption>
+            <p>Copying every table in a dataset into another project/dataset is both quick, free, and easy in the interface. Just click on &lsquo;Copy Dataset&rsquo; and specify the destination project and dataset.</p>
+        </figcaption>
+</figure>
+
+<p>In my particular use case, however, I needed to copy just a specific range of tables - not the entire dataset. For that, I wrote a script using <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language">data definition language (DDL)</a>. I&rsquo;ve done my best to generalize the script to be as plug-and-play as possible. All you have to do is update the first few lines to specify <em>your</em> source and destination projects and datasets, as well as the start and end dates for the Google Analytics daily tables you want to copy.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#75715e">--------------------------------------------------------------
+</span><span style="color:#75715e">-- Copy multiple date-sharded GA tables to new project/dataset
+</span><span style="color:#75715e">--------------------------------------------------------------
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">-- Update the variables below to specify your source project and dataset (where
+</span><span style="color:#75715e">-- you want to copy the tables from), the destination project/dataset (where you
+</span><span style="color:#75715e">-- want to copy the tables to), and the first and last date. The first and last
+</span><span style="color:#75715e">-- date specify the date range (inclusive) of tables you want to copy.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">DECLARE</span> source_project STRING <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#34;PROJECT_NAME&#34;</span>;
+<span style="color:#66d9ef">DECLARE</span> source_dataset STRING <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#34;DATASET_ID&#34;</span>;
+<span style="color:#66d9ef">DECLARE</span> destination_project STRING <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#34;PROJECT_NAME&#34;</span>;
+<span style="color:#66d9ef">DECLARE</span> destination_dataset STRING <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#34;DATASET_ID&#34;</span>;
+<span style="color:#66d9ef">DECLARE</span> start_date INT64 <span style="color:#66d9ef">DEFAULT</span> <span style="color:#ae81ff">20200625</span>;
+<span style="color:#66d9ef">DECLARE</span> end_date INT64 <span style="color:#66d9ef">DEFAULT</span> <span style="color:#ae81ff">20200627</span>;
+
+<span style="color:#75715e">-- DO NOT TOUCH ANYTHING BELOW THIS LINE --
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">DECLARE</span> source_ga_tables_array ARRAY<span style="color:#f92672">&lt;</span>STRING<span style="color:#f92672">&gt;</span>;
+<span style="color:#66d9ef">DECLARE</span> destination_ga_tables_array ARRAY<span style="color:#f92672">&lt;</span>STRING<span style="color:#f92672">&gt;</span>;
+<span style="color:#66d9ef">DECLARE</span> source_ga_table STRING;
+<span style="color:#66d9ef">DECLARE</span> destination_ga_table STRING;
+<span style="color:#66d9ef">DECLARE</span> i INT64 <span style="color:#66d9ef">DEFAULT</span> <span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">SET</span> source_ga_tables_array <span style="color:#f92672">=</span> (
+  <span style="color:#66d9ef">WITH</span> date_array <span style="color:#66d9ef">AS</span> (
+    <span style="color:#66d9ef">SELECT</span>
+      GENERATE_ARRAY(start_date, end_date) <span style="color:#66d9ef">AS</span> dates
+  )
+  <span style="color:#66d9ef">SELECT</span>
+    ARRAY_AGG(
+        CONCAT(source_project, <span style="color:#e6db74">&#39;.&#39;</span>, source_dataset, <span style="color:#e6db74">&#39;.ga_sessions_&#39;</span>, date)
+    )
+  <span style="color:#66d9ef">FROM</span>
+    date_array, <span style="color:#66d9ef">UNNEST</span>(dates) <span style="color:#66d9ef">AS</span> date
+);
+
+<span style="color:#66d9ef">SET</span> destination_ga_tables_array <span style="color:#f92672">=</span> (
+  <span style="color:#66d9ef">SELECT</span>
+    ARRAY_AGG(
+        REGEXP_REPLACE(source_ga_tables_array,
+            CONCAT(source_project, <span style="color:#e6db74">&#39;.&#39;</span>, source_dataset),
+            CONCAT(destination_project, <span style="color:#e6db74">&#39;.&#39;</span>, destination_dataset)
+        )
+    ) <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">table_name</span>
+  <span style="color:#66d9ef">FROM</span>
+    <span style="color:#66d9ef">UNNEST</span>(source_ga_tables_array) <span style="color:#66d9ef">AS</span> source_ga_tables_array
+);
+
+WHILE i <span style="color:#f92672">&lt;</span> ARRAY_LENGTH(source_ga_tables_array) <span style="color:#66d9ef">DO</span>
+  <span style="color:#66d9ef">SET</span> source_ga_table <span style="color:#f92672">=</span> (
+    <span style="color:#66d9ef">SELECT</span>
+      CONCAT(<span style="color:#e6db74">&#39;`&#39;</span>, source_ga_tables_array[<span style="color:#66d9ef">OFFSET</span>(i)], <span style="color:#e6db74">&#39;`&#39;</span>)
+  );
+  <span style="color:#66d9ef">SET</span> destination_ga_table <span style="color:#f92672">=</span> (
+    <span style="color:#66d9ef">SELECT</span>
+      CONCAT(<span style="color:#e6db74">&#39;`&#39;</span>, destination_ga_tables_array[<span style="color:#66d9ef">OFFSET</span>(i)], <span style="color:#e6db74">&#39;`&#39;</span>)
+  );
+  <span style="color:#66d9ef">EXECUTE</span> <span style="color:#66d9ef">IMMEDIATE</span> format(<span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">  CREATE TABLE
+</span><span style="color:#e6db74">    %s
+</span><span style="color:#e6db74">  AS
+</span><span style="color:#e6db74">  SELECT
+</span><span style="color:#e6db74">    *
+</span><span style="color:#e6db74">  FROM
+</span><span style="color:#e6db74">    %s
+</span><span style="color:#e6db74">  &#34;&#34;&#34;</span>, destination_ga_table, source_ga_table);
+  <span style="color:#66d9ef">SET</span> i <span style="color:#f92672">=</span> i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+<span style="color:#66d9ef">END</span> WHILE;</code></pre></div>
+
+    </div>
+    <footer>
+      <div class="stats">
+  
+    <ul class="categories">
+      
+        
+          <li><a class="article-terms-link" href="/categories/bigquery/">BigQuery</a></li>
+        
+      
+    </ul>
+  
+  
+    <ul class="tags">
+      
+        
+          <li><a class="article-terms-link" href="/tags/bigquery/">BigQuery</a></li>
+        
+          <li><a class="article-terms-link" href="/tags/google-analytics/">Google Analytics</a></li>
+        
+          <li><a class="article-terms-link" href="/tags/sql/">SQL</a></li>
+        
+      
+    </ul>
+  
+</div>
+
+    </footer>
+  </article>
+  
+    
+  <article class="post">
+    
+    <div>
+      <h2 id="say-something">Say Something</h2>
+        <form id="comment-form" class="new-comment" method="POST">
+          
+          <h3 class='reply-notice hidden'>
+            <span class='reply-name'></span>
+          </h3>
+
+          
+          <input type="hidden" name="options[entryId]" value="49a05aed42ec3f68cbf595856c7d34ca">
+          <input type='hidden' name='fields[replyThread]' value=''>
+          <input type='hidden' name='fields[replyID]' value=''>
+          <input type='hidden' name='fields[replyName]' value=''>
+
+          
+          <input required name='fields[name]' type='text' placeholder='Your Name'>
+          <input name='fields[website]' type='text' placeholder='Your Website'>
+          <input required name='fields[email]' type='email' placeholder='Your Email'>
+          <textarea required name='fields[body]' placeholder='Your Message' rows='10'></textarea>
+
+          
+          
+
+          
+          <div class='submit-notice'>
+            <strong class='submit-notice-text submit-success hidden'>Thanks for your comment! It will be shown on the site once it has been approved.</strong>
+            <strong class='submit-notice-text submit-failed hidden'>Sorry, there was an error with your submission. Please make sure all required fields have been completed and try again.</strong>
+          </div>
+
+          
+          <input type='submit' value='Submit' class='button'>
+          <input type='submit' value='Submitted' class='hidden button' disabled>
+          <input type='reset' value='Reset' class='button'>
+        </form>
+    </div>
+
+    
+    <div>
+      <h2>Comments</h2><p>Nothing yet.</p>
+      
+    </div>
+  </article>
+
+
+  
+  <div class="pagination">
+    
+    
+      <a href="/blog/updating-hit-level-custom-dimensions-google-analytics/" class="button right"><span>Updating Google Analytics Hit-Level Custom Dimensions in BigQuery</span></a>
+    
+  </div>
+
+      </main>
+      <section id="site-sidebar">
+  
+    <section id="recent-posts">
+      <header>
+        <h1>Recent Posts</h1>
+      </header>
+      
+      <article class="mini-post">
+          
+        <header>
+          <h2><a href="/blog/copying-tables-in-bigquery/">Copying Google Analytics Tables in BigQuery</a></h2>
+          <time class="published" datetime="2020-11-06 00:00:00 &#43;0000 UTC">November 6, 2020</time>
+        </header>
+      </article>
+      
+      <article class="mini-post">
+          
+        <header>
+          <h2><a href="/blog/updating-hit-level-custom-dimensions-google-analytics/">Updating Google Analytics Hit-Level Custom Dimensions in BigQuery</a></h2>
+          <time class="published" datetime="2020-10-20 21:59:14 -0400 -0400">October 20, 2020</time>
+        </header>
+      </article>
+      
+      <article class="mini-post">
+          
+        <header>
+          <h2><a href="/blog/my-first-post/">The beginning ...</a></h2>
+          <time class="published" datetime="2020-10-15 16:38:19 -0500 -0500">October 15, 2020</time>
+        </header>
+      </article>
+      
+      
+    </section>
+  
+
+  
+    
+
+      <section id="categories">
+        <header>
+          <h1><a href="/categories">Categories</a></h1>
+        </header>
+        <ul>
+          
+          
+          <li>
+              <a href="/categories/bigquery/">bigquery<span class="count">2</span></a>
+          
+          <li>
+              <a href="/categories/misc/">misc<span class="count">1</span></a>
+          
+          </li>
+        </ul>
+      </section>
+    
+  
+
+  
+    <section id="mini-bio">
+      <header>
+        <h1>About</h1>
+      </header>
+      <p>This theme was developed for Hugo static site generator.</p>
+      <footer>
+        <a href="/about" class="button">Learn More</a>
+      </footer>
+    </section>
+  
+</section>
+
+      <footer id="site-footer">
+  
+  <p class="copyright">
+    © 2020 Jim Gianoglio (gin-olio) | Problem Solving with Data
+      <br>
+    Theme: <a href='https://github.com/pacollins/hugo-future-imperfect-slim' target='_blank' rel='noopener'>Hugo Future Imperfect Slim</a><br>A <a href='https://html5up.net/future-imperfect' target='_blank' rel='noopener'>HTML5 UP port</a> | Powered by <a href='https://gohugo.io/' title='0.78.1' target='_blank' rel='noopener'>Hugo</a>
+  </p>
+</footer>
+<a id="back-to-top" href="#" class="fas fa-arrow-up fa-2x"></a>
+
+      <script src="/js/highlight.js"></script>
+    
+    <script>hljs.initHighlightingOnLoad();</script><script src="/js/bundle.min.5955090a3253deadcd66071270aa2274dabe15ffc97094cec252d87b6f3f00bf.js" integrity="sha256-WVUJCjJT3q3NZgcScKoidNq&#43;Ff/JcJTOwlLYe28/AL8="></script>
+    <script src="/js/add-on.js"></script>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-151246514-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    </div>
+  </body>
+</html>
