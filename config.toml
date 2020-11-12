@@ -76,7 +76,7 @@ disableLanguages        = []
     gitProvider         = ""
     username            = ""
     repo                = ""
-    branch              = ""
+    branch              = "gh-pages"
 
     [params.staticman.recaptcha]
       siteKey           = ""

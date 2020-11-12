@@ -11,13 +11,13 @@ comments:
 
   # When allowedOrigins is defined, only requests sent from one of the domains
   # listed will be accepted.
-  # allowedOrigins: ["localhost", "hugo.staticman.net"]
+  allowedOrigins: ["localhost", "www.gianoglio.com"]
 
   # (*) REQUIRED
   #
   # Name of the branch being used. Must match the branch configured in
   # "config.toml".
-  branch: "master"
+  branch: "gh-pages"
 
   # List of fields to be populated automatically by Staticman and included in
   # the data file. Keys are the name of the field. The value can be an object
@@ -37,7 +37,7 @@ comments:
   moderation: false
 
   # Name of the site. Used in notification emails.
-  name: ""
+  name: "gianoglio.com"
 
   # (*) REQUIRED
   #
