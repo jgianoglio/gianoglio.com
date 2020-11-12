@@ -20,7 +20,7 @@ I won&amp;rsquo;t go into the pros and cons of each option, or why you would wan
     <item>
       <title>Updating Google Analytics Hit-Level Custom Dimensions in BigQuery</title>
       <link>https://www.gianoglio.com/blog/updating-hit-level-custom-dimensions-google-analytics/</link>
-      <pubDate>Tue, 20 Oct 2020 21:59:14 -0400</pubDate>
+      <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://www.gianoglio.com/blog/updating-hit-level-custom-dimensions-google-analytics/</guid>
       <description>I recently had a client with a problem. There was an issue with their Google Tag Manager implementation that prevented the collection of certain hit-level custom dimensions to Google Analytics.
