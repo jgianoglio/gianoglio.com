@@ -1,13 +1,14 @@
----
-draft: false
-date: 2020-10-20T21:59:14-04:00
-title: "Updating Google Analytics Hit-Level Custom Dimensions in BigQuery"
-description: "Updating hit-level custom dimension information in BigQuery is not as simple as it sounds. Here's the code to do it."
-tags: [BigQuery, Google Analytics, SQL]
-categories: [BigQuery]
-featured_image: "../../images/mimic-sessions.png"
-summary: ""
----
++++
+draft = false
+date = "2020-10-20"
+title = "Updating Google Analytics Hit-Level Custom Dimensions in BigQuery"
+description = "Updating hit-level custom dimension information in BigQuery is not as simple as it sounds. Here's the code to do it."
+tags = ["BigQuery", "Google Analytics", "SQL"]
+categories = ["BigQuery"]
+[[images]]
+  src = "img/2020/10/updated_hits.png"
+summary = ""
++++
 
 I recently had a client with a problem. There was an issue with their Google Tag Manager implementation that prevented the collection of certain hit-level custom dimensions to Google Analytics.
 

@@ -1,13 +1,13 @@
----
-title: "The beginning ..."
-date: 2020-10-15T16:38:19-05:00
-tags: []
-categories: [Misc]
-featured_image: "../../images/long-journey.png"
-draft: false
-summary: "As the saying goes, a journey of a thousand miles begins with a single step. I don’t know if I have a thousand blog posts in me, but I have to start somewhere 🙂"
----
-{{< figure src="../../images/long-journey.png">}}
++++
+title = "The beginning ..."
+date = "2020-10-15"
+tags = []
+categories = ["Misc"]
+draft = false
+[[images]]
+  src = "img/2020/10/long-journey.png"
+summary = "As the saying goes, a journey of a thousand miles begins with a single step. I don’t know if I have a thousand blog posts in me, but I have to start somewhere 🙂"
++++
 
 As the saying goes, a journey of a thousand miles begins with a single step. I don’t know if I have a thousand blog posts in me, but I have to start somewhere 🙂
 

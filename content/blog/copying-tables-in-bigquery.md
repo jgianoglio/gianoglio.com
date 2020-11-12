@@ -1,13 +1,15 @@
----
-draft: false
-date: 2020-11-06
-title: "Copying Google Analytics Tables in BigQuery"
-description: "If you need to copy multiple date-sharded tables from one dataset to another in BigQuery, here's a script to automate it."
-tags: [BigQuery, Google Analytics, SQL]
-categories: [BigQuery]
-featured_image: "../../images/copy_dataset.png"
-summary: ""
----
++++
+draft = false
+date = "2020-11-06"
+title = "Copying Google Analytics Tables in BigQuery"
+description = "If you need to copy multiple date-sharded tables from one dataset to another in BigQuery, here's a script to automate it."
+tags = ["BigQuery", "Google Analytics", "SQL"]
+categories = ["BigQuery"]
+[[images]]
+  src = "img/2020/11/copy_dataset.png"
+summary = ""
++++
+
 If you've ever needed to copy tables from one project or dataset to another in BigQuery, the below script may be a good option for you.
 
 There are many options for copying tables in BigQuery, ranging from completely non-technical (point and click in the BigQuery UI) to more technical (command line and/or Python scripts).
