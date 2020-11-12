@@ -1,151 +1,163 @@
-baseurl = "https://www.gianoglio.com"
-title = "Jim Gianoglio (gin-olio) | Problem Solving with Data"
-theme = "coder"
-languagecode = "en"
-defaultcontentlanguage = "en"
-googleAnalytics = "UA-151246514-1"
+# For a description of these parameters, please visit the theme wiki.
+# https://github.com/pacollins/hugo-future-imperfect-slim/wiki/config.toml
+baseurl                 = "https://www.gianoglio.com/"
+DefaultContentLanguage  = "en"
+title                   = "Jim Gianoglio (gin-olio) | Problem Solving with Data"
+theme                   = "hugo-future-imperfect-slim"
+paginate                = 3
+disqusShortname         = ""
+googleAnalytics         = "UA-151246514-1"
+pluralizeListTitles     = false
+disableLanguages        = []
 
-paginate = 20
-canonifyurls = true
-summaryLength = 50
+[markup.goldmark.renderer]
+  unsafe                = true
 
-pygmentsstyle = "bw"
-pygmentscodefences = true
-pygmentscodefencesguesssyntax = true
-
-disqusShortname = "yourdiscussshortname"
+[outputs]
+  home                  = ["html", "json", "rss"]
 
 [params]
-    author = "Jim Gianoglio"
-    info = "I do fun stuff with data."
-    description = "A blog about solving problems with data by Jim Gianoglio."
-    avatarurl = "images/avatar.jpg"
+  enableCDN             = false
+  cssFiles              = ["default"]
+  jsFiles               = ["default"]
+  highlightjs           = true
+  highlightjsTheme      = ""
+  highlightjsLang       = []
+  viewMorePostsLink     = "/blog/"
+  readingTime           = true
+  imageStretch          = ""
+  removeBlur            = false
+  socialShare           = ["twitter", "facebook", "reddit", "linkedin", "pinterest", "email"]
+  hideEmptyStats        = false
 
-    gtm_id = "GTM-TFH36H"
+  [params.meta]
+    description         = "A blog about solving problems with data by Jim Gianoglio."
+    author              = "Jim Gianoglio"
+    favicon             = false
+    svg                 = true
+    faviconVersion      = "1"
+    msColor             = "#ffffff"
+    iOSColor            = "#ffffff"
 
-    favicon_32 = "/images/favicon-32x32.png"
-    favicon_16 = "/images/favicon-16x16.png"
+  [params.header]
+    navbarTitle         = "(gin-olio)"
+    dynamicTitles       = true
+    searchMenu          = true
+    shareMenu           = true
+    languageMenu        = true
 
-    # footercontent = "Text at the bottom of the page."
+  [params.intro]
+    header                = "Jim Gianoglio"
+    paragraph             = "I do fun stuff with data."
+    rssIntro              = true
+    socialIntro           = true
+    hideWhenSingleColumn  = false
+    alwaysOnHomepage      = false
 
-    dateformat = "January 2, 2006"
+    [params.intro.pic]
+      src                 = "img/main/avatar.jpg"
+      shape               = "circle"
+      width               = ""
+      alt                 = "Jim Gianoglio, Data Scientist"
 
-    # Specify light/dark colorscheme
-    # Supported values:
-    # "auto" (use preference set by browser)
-    # "dark" (dark background, light foreground)
-    # "light" (light background, dark foreground) (default)
-    colorscheme = "auto"
+  [params.sidebar]
+    about               = "This theme was developed for Hugo static site generator."
+    postAmount          = 5
+    categories          = true
+    categoriesByCount   = true
 
-    # Series see also post count
-    maxSeeAlsoItems = 5
+  [params.footer]
+    rssFooter           = false
+    socialFooter        = false
 
-    hidecredits = true
-    hidecopyright = false
+  [params.staticman]
+    enabled             = true
+    api                 = ""  # No Trailing Slash
+    gitProvider         = ""
+    username            = ""
+    repo                = ""
+    branch              = ""
 
-    rtl = false
+    [params.staticman.recaptcha]
+      siteKey           = ""
+      encryptedKey      = ""
 
-    # Custom CSS
-    #custom_css = ["css/custom.css"]
-    
-    # Custom JS
-    custom_js = []
+[menu]
 
-    math = true
+  [[menu.main]]
+    name              = "Home"
+    identifier        = "home"
+    url               = "/"
+    pre               = "<i class='fa fa-home'></i>"
+    weight            = 1
 
-[taxonomies]
-    category = "categories"
-    tag = "tags"
-    # mood = "moods"
+  [[menu.main]]
+    name              = "About"
+    identifier        = "about"
+    url               = "/about/"
+    pre               = "<i class='far fa-id-card'></i>"
+    weight            = 2
 
-# Social links
-[[params.social]]
-    name = "Twitter"
-    icon = "fab fa-twitter fa-2x"
-    weight = 1
-    url = "https://twitter.com/jgianoglio/"
-    target = "new"
-[[params.social]]
-    name = "LinkedIn"
-    icon = "fab fa-linkedin fa-2x"
-    weight = 3
-    url = "https://www.linkedin.com/in/jimgianoglio/"
-    target = "new"
-[[params.social]]
-    name = "Github"
-    icon = "fab fa-github fa-2x"
-    weight = 2
-    url = "https://github.com/jgianoglio/"
+  [[menu.main]]
+    name              = "Blog"
+    identifier        = "blog"
+    url               = "/blog/"
+    pre               = "<i class='far fa-newspaper'></i>"
+    weight            = 3
 
-# Menu links
-[[menu.main]]
-    name = "Blog"
-    weight = 1
-    url  = "/posts/"
-[[menu.main]]
-    name = "About"
-    weight = 2
-    url = "/about/"
+#  [[menu.main]]
+#    name              = "Categories"
+#    identifier        = "categories"
+#    url               = "/categories/"
+#    pre               = "<i class='fas fa-sitemap'></i>"
+#    weight            = 5
 
-[markup]
-  defaultMarkdownHandler = "goldmark"
-  [markup.asciidocExt]
-    backend = "html5"
-    extensions = []
-    failureLevel = "fatal"
-    noHeaderOrFooter = true
-    preserveTOC = false
-    safeMode = "unsafe"
-    sectionNumbers = false
-    trace = false
-    verbose = false
-    workingFolderCurrent = false
-    [markup.asciidocExt.attributes]
-  [markup.blackFriday]
-    angledQuotes = false
-    footnoteAnchorPrefix = ""
-    footnoteReturnLinkContents = ""
-    fractions = true
-    hrefTargetBlank = false
-    latexDashes = true
-    nofollowLinks = false
-    noreferrerLinks = false
-    plainIDAnchors = true
-    skipHTML = false
-    smartDashes = true
-    smartypants = true
-    smartypantsQuotesNBSP = false
-    taskLists = true
-  [markup.goldmark]
-    [markup.goldmark.extensions]
-      definitionList = true
-      footnote = true
-      linkify = true
-      strikethrough = true
-      table = true
-      taskList = true
-      typographer = true
-    [markup.goldmark.parser]
-      attribute = true
-      autoHeadingID = true
-      autoHeadingIDType = "github"
-    [markup.goldmark.renderer]
-      hardWraps = false
-      unsafe = false
-      xhtml = false
-  [markup.highlight]
-    anchorLineNos = false
-    codeFences = true
-    guessSyntax = false
-    hl_Lines = ""
-    lineAnchors = ""
-    lineNoStart = 1
-    lineNos = true
-    lineNumbersInTable = true
-    noClasses = true
-    style = "paraiso-dark"
-    tabWidth = 4
-  [markup.tableOfContents]
-    endLevel = 3
-    ordered = false
-    startLevel = 2
+[social]
+  # Coding Communities
+  github                = "jgianoglio/"
+  gitlab                = ""
+  stackoverflow         = "" # User Number
+  bitbucket             = ""
+  jsfiddle              = ""
+  codepen               = ""
+  # Visual Art Communities
+  deviantart            = ""
+  flickr                = ""
+  behance               = ""
+  dribbble              = ""
+  # Publishing Communities
+  wordpress             = ""
+  medium                = ""
+  # Professional/Business Oriented Communities
+  linkedin              = "jimgianoglio/"
+  linkedin_company      = ""
+  foursquare            = ""
+  xing                  = ""
+  slideshare            = ""
+  # Social Networks
+  facebook              = ""
+  googleplus            = ""
+  reddit                = ""
+  quora                 = ""
+  youtube               = ""
+  vimeo                 = ""
+  whatsapp              = "" # WhatsApp Number
+    # WeChat and QQ need testing.
+    wechat              = ""
+    qq                  = "" # User ID Number
+  instagram             = ""
+  tumblr                = ""
+  twitter               = "jgianoglio"
+  strava                = ""
+  skype                 = ""
+  snapchat              = ""
+  pinterest             = ""
+  telegram              = ""
+  vine                  = ""
+  googlescholar         = ""
+  orcid                 = ""
+  researchgate          = ""
+  keybase               = ""
+  mastodon              = ""
+  # Email
+  email                 = ""
