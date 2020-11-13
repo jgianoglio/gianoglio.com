@@ -74,7 +74,7 @@ disableLanguages        = []
     enabled             = true
     api                 = "gianoglio-comments.herokuapp.com"  # No Trailing Slash
     gitProvider         = "github"
-    username            = "gianoglio-bot"
+    username            = "jgianoglio"
     repo                = "gianoglio.com"
     branch              = "gh-pages"
 
