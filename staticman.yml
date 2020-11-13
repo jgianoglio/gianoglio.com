@@ -7,8 +7,7 @@ comments:
   #
   # Names of the fields the form is allowed to submit. If a field that is
   # not here is part of the request, an error will be thrown.
-  # allowedFields: ["name", "email", "website", "body", "replyID", "replyName", "replyThread"]
-  allowedFields: ["name", "email", "website", "body"]
+  allowedFields: ["name", "email", "website", "body", "replyID", "replyName", "replyThread"]
 
   # Names of required fields. If any of these isn't in the request or is empty,
   # an error will be thrown.
@@ -40,6 +39,8 @@ comments:
   # branch. If set to `true`, a pull request will be created for your approval.
   # Otherwise, entries will be published to the main branch automatically.
   moderation: false
+
+  GitHubAuth: false
 
   # Name of the site. Used in notification emails.
   name: "gianoglio.com"
