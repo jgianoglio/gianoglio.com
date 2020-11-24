@@ -6,7 +6,7 @@ title                   = "Jim Gianoglio (gin-olio) | Problem Solving with Data"
 theme                   = "hugo-future-imperfect-slim"
 paginate                = 3
 disqusShortname         = ""
-googleAnalytics         = "UA-151246514-1"
+googleAnalytics         = ""
 pluralizeListTitles     = false
 disableLanguages        = []
 
